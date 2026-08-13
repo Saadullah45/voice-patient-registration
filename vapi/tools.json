@@ -1,0 +1,84 @@
+{
+  "_comment": "Vapi tools (functions). Add each in Vapi > Assistant > Tools, or via API. Set every tool's server.url to https://YOUR_DEPLOY_URL/vapi/webhook and add header X-Vapi-Secret matching VAPI_WEBHOOK_SECRET. All three tools can share the same server URL; the webhook routes by tool name.",
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "lookup_patient",
+        "description": "Check whether a patient already exists for a phone number. Call this first, before collecting other info.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "phone_number": { "type": "string", "description": "Caller's 10-digit US phone number" }
+          },
+          "required": ["phone_number"]
+        }
+      },
+      "server": { "url": "https://YOUR_DEPLOY_URL/vapi/webhook" }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "create_patient",
+        "description": "Register a new patient. Call only after the caller confirms their information is correct.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "first_name": { "type": "string" },
+            "last_name": { "type": "string" },
+            "date_of_birth": { "type": "string", "description": "MM/DD/YYYY" },
+            "sex": { "type": "string", "enum": ["Male", "Female", "Other", "Decline to Answer"] },
+            "phone_number": { "type": "string", "description": "10-digit US phone" },
+            "email": { "type": "string" },
+            "address_line_1": { "type": "string" },
+            "address_line_2": { "type": "string" },
+            "city": { "type": "string" },
+            "state": { "type": "string", "description": "2-letter US abbreviation" },
+            "zip_code": { "type": "string", "description": "5-digit or ZIP+4" },
+            "insurance_provider": { "type": "string" },
+            "insurance_member_id": { "type": "string" },
+            "preferred_language": { "type": "string" },
+            "emergency_contact_name": { "type": "string" },
+            "emergency_contact_phone": { "type": "string" }
+          },
+          "required": [
+            "first_name", "last_name", "date_of_birth", "sex", "phone_number",
+            "address_line_1", "city", "state", "zip_code"
+          ]
+        }
+      },
+      "server": { "url": "https://YOUR_DEPLOY_URL/vapi/webhook" }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "update_patient",
+        "description": "Update fields on an existing patient (returning caller). Include patient_id and only the fields being changed.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "patient_id": { "type": "string" },
+            "first_name": { "type": "string" },
+            "last_name": { "type": "string" },
+            "date_of_birth": { "type": "string", "description": "MM/DD/YYYY" },
+            "sex": { "type": "string", "enum": ["Male", "Female", "Other", "Decline to Answer"] },
+            "phone_number": { "type": "string" },
+            "email": { "type": "string" },
+            "address_line_1": { "type": "string" },
+            "address_line_2": { "type": "string" },
+            "city": { "type": "string" },
+            "state": { "type": "string" },
+            "zip_code": { "type": "string" },
+            "insurance_provider": { "type": "string" },
+            "insurance_member_id": { "type": "string" },
+            "preferred_language": { "type": "string" },
+            "emergency_contact_name": { "type": "string" },
+            "emergency_contact_phone": { "type": "string" }
+          },
+          "required": ["patient_id"]
+        }
+      },
+      "server": { "url": "https://YOUR_DEPLOY_URL/vapi/webhook" }
+    }
+  ]
+}
