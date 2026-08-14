@@ -13,7 +13,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
-from . import crud, schemas, vapi
+from . import crud, dashboard, schemas, vapi
 from .database import Base, engine, get_db
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
@@ -31,6 +31,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Patient Registration API", version="1.0.0", lifespan=lifespan)
 app.include_router(vapi.router)
+app.include_router(dashboard.router)
 
 
 # --- response envelope helpers ---------------------------------------------

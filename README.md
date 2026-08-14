@@ -82,6 +82,7 @@ Envelope on every response: `{ "data": ..., "error": ... }`
 | PUT | `/patients/:id` | partial update |
 | DELETE | `/patients/:id` | soft delete (sets `deleted_at`, never hard-deletes) |
 | POST | `/vapi/webhook` | voice tool-call bridge (internal) |
+| GET | `/dashboard` | read-only HTML view of all registered patients (bonus) |
 
 Status codes: 200/201 success, 400 bad query, 404 not found, 409 duplicate,
 422 validation, 500 unexpected.
@@ -119,8 +120,12 @@ curl -X POST localhost:8000/patients -H 'Content-Type: application/json' -d '{
   sharing a phone would collide; a real system would use a composite match.
 - **Transcripts:** the webhook acknowledges non-tool Vapi events but doesn't yet
   persist full transcripts (hook point is marked in `vapi.py`).
-- **AuthN/Z:** REST endpoints are open aside from the webhook secret; production
-  would add proper auth and rate limiting. No PHI encryption at rest (out of scope).
+- **AuthN/Z:** REST endpoints (including `/dashboard`) are open aside from the
+  webhook secret; production would add proper auth and rate limiting. No PHI
+  encryption at rest (out of scope). `/dashboard` HTML-escapes every field before
+  rendering, since several patient fields have no character restriction beyond
+  length and the endpoint is unauthenticated — without escaping this would be a
+  stored-XSS hole.
 - **Appointment scheduling / dashboard:** not built (listed bonuses).
 
 ## Observability
