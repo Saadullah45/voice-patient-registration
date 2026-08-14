@@ -94,6 +94,10 @@ def _handle(name: str, args: dict) -> str:
         # Turn Pydantic errors into a short, speakable list of what to re-ask.
         problems = "; ".join(f"{err['loc'][-1]}: {err['msg']}" for err in e.errors())
         return json.dumps({"error": "validation_failed", "message": problems})
+    except ValueError as e:
+        # lookup_patient normalizes phone_number outside the Pydantic layer,
+        # so its errors need the same "validation_failed" treatment.
+        return json.dumps({"error": "validation_failed", "message": str(e)})
     except Exception as e:  # noqa: BLE001 - never 500 the voice agent
         log.exception("[vapi] tool '%s' failed", name)
         return json.dumps({"error": "server_error", "message": str(e)})
